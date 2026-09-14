@@ -1,0 +1,27 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.MAMubeenKhan/screenshotline",
+  "title": "Screenshotline",
+  "description": "Screenshot any web page, or read it as clean Markdown, with consent banners, ads and popups removed.",
+  "websiteUrl": "https://screenshotline.com/docs/extract",
+  "repository": {
+    "url": "https://github.com/MAMubeenKhan/screenshotline",
+    "source": "github",
+    "subfolder": "mcp"
+  },
+  "version": "0.1.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://api.screenshotline.com/mcp",
+      "headers": [
+        {
+          "name": "X-Access-Key",
+          "description": "API key from https://screenshotline.com/account (free: 500 renders a month, no card).",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+Run these in Git Bash for analytics of screenshotsline.com
+
+owner-report                              # everything, last 14 days
+owner-report --days 1                     # today
+owner-report --account someone@gmail.com  # one user's full history

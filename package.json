@@ -1,0 +1,36 @@
+{
+  "name": "screenshotline",
+  "version": "0.1.0",
+  "description": "A screenshot API that survives production. URL in, image out.",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "bench": "node bench/run.js",
+    "bench:compare": "node bench/compare.js",
+    "smoke": "node test/smoke.js",
+    "sign": "node tools/sign.js",
+    "mcp": "node mcp/server.js",
+    "test:billing": "node test/billing.js",
+    "test:blocking": "node test/blocking.js",
+    "test:options": "node test/options.js",
+    "test:limits": "node test/limits.js",
+    "test": "node test/billing.js && node test/blocking.js && node test/options.js && node test/blog.js && node test/limits.js && node test/smoke.js",
+    "test:blog": "node test/blog.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "express": "^5.2.1",
+    "marked": "^18.0.12",
+    "puppeteer": "^25.10.0"
+  },
+  "license": "AGPL-3.0-or-later",
+  "private": true,
+  "bin": {
+    "screenshotline-mcp": "mcp/server.js"
+  }
+}
