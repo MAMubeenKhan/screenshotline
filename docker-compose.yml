@@ -1,0 +1,57 @@
+# Self-hosting Screenshotline.
+#
+#   docker compose up -d
+#   curl "http://localhost:3000/take?url=https://example.com" -o out.png
+#
+# That is the whole setup. If it does not work on a clean machine, that is a
+# bug worth reporting - the compose file working first time is the difference
+# between a repo that earns stars and one that does not.
+
+services:
+  screenshotline:
+    build: .
+    # Or use the published image once you publish one:
+    # image: ghcr.io/YOURNAME/screenshotline:latest
+    ports:
+      - "3000:3000"
+    environment:
+      POOL_SIZE: "2"
+      MAX_RENDERS_PER_BROWSER: "50"
+      RENDER_TIMEOUT_MS: "30000"
+      RATE_LIMIT_PER_MINUTE: "60"
+      # Comma-separated. Leave empty for open mode (local use only).
+      ACCESS_KEYS: ""
+      # Set this and pass ?signature=... for URLs that appear in public HTML.
+      SIGNING_SECRET: ""
+      # REQUIRE_SIGNATURE: "true"
+    volumes:
+      - cache:/app/.cache
+      # Accounts, API key hashes and usage counters. The cache above can be
+      # thrown away and refilled; this cannot. Without this volume a redeploy
+      # deletes every customer you have.
+      - data:/app/.data
+    restart: unless-stopped
+
+    # Redundant with tini in the Dockerfile, but harmless and explicit: reaps
+    # orphaned Chrome processes so pool slots are not lost to zombies.
+    init: true
+
+    # Chrome uses /dev/shm for shared memory and Docker's 64MB default is not
+    # enough for image-heavy pages. The code also passes
+    # --disable-dev-shm-usage; either alone is sufficient, both is fine.
+    shm_size: "1gb"
+
+    # A screenshot renderer executes untrusted pages. Give it no route to
+    # anything you care about, and keep ALLOW_PRIVATE_HOSTS off.
+    security_opt:
+      - no-new-privileges:true
+
+    deploy:
+      resources:
+        limits:
+          # Each browser peaks near 1GB before recycling. Size for POOL_SIZE.
+          memory: 3g
+
+volumes:
+  cache:
+  data:

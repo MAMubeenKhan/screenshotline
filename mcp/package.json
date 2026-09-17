@@ -1,0 +1,39 @@
+{
+  "name": "screenshotline-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for Screenshotline: screenshot any web page, or read it as clean Markdown, from Claude and other MCP clients. Consent banners, ads, chat widgets and popups removed.",
+  "mcpName": "io.github.MAMubeenKhan/screenshotline",
+  "type": "module",
+  "bin": {
+    "screenshotline-mcp": "server.js"
+  },
+  "files": [
+    "server.js",
+    "tools.js",
+    "README.md"
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "screenshot",
+    "screenshot-api",
+    "web-to-markdown",
+    "claude",
+    "llm",
+    "agents"
+  ],
+  "homepage": "https://screenshotline.com/docs/extract",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MAMubeenKhan/screenshotline.git",
+    "directory": "mcp"
+  },
+  "bugs": "https://github.com/MAMubeenKhan/screenshotline/issues",
+  "license": "AGPL-3.0-or-later"
+}

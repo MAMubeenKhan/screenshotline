@@ -1,0 +1,25 @@
+# Build context hygiene. Without this the whole working tree is sent to the
+# daemon - including node_modules with Puppeteer's bundled Chromium, which is
+# several hundred megabytes and is reinstalled inside the image anyway.
+node_modules
+.git
+.github
+.data
+.cache
+.puppeteer
+bench/out
+*.tar
+*.png
+!docs/**/*.png
+.env
+.env.local
+deploy/app.env
+
+# Internal working documents. Not needed to build, and no reason to bake a
+# business plan into a public image.
+launchday.txt
+90days.txt
+handoff.txt
+memory.md
+CLAUDE.md
+DEPLOY.md

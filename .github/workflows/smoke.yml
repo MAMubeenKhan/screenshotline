@@ -1,0 +1,62 @@
+# The green check Phase 4 needs before the repo goes public.
+#
+# Deliberately just the smoke suite. It boots the real server, launches real
+# Chromium and renders real pages, so it catches the failures that matter
+# (pool, SSRF, signing, formats) in about 90 seconds. The benchmark suites
+# hit third-party sites and would make CI a flaky news-site monitor.
+name: smoke
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # Puppeteer downloads its own Chromium on install. Cache it, or every
+      # run pays ~150MB and a minute for a browser that never changes.
+      - name: Cache Puppeteer browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/puppeteer
+          key: puppeteer-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - run: npm ci
+
+      # A cache hit skips puppeteer's postinstall download, so make sure the
+      # browser is actually present before trying to render with it.
+      - name: Ensure Chromium is installed
+        run: npx puppeteer browsers install chrome
+
+      # Fast, no browser, no network - and it guards the money path.
+      - run: npm run test:billing
+
+      # Also fast and browserless. test:blocking scans the emitted page
+      # scripts for control characters - a lone backslash escape in a
+      # template literal silently became a backspace once and killed the
+      # whole consent heuristic while every other suite stayed green.
+      - run: npm run test:blocking
+
+      - run: npm run test:options
+
+      # Posts parse, scheduled posts stay hidden until their date, and code
+      # blocks keep every backslash.
+      - run: npm run test:blog
+
+      # Boots the server with billing ON, which smoke does not. The demo=true
+      # billing bypass lived in exactly that gap.
+      - run: npm run test:limits
+
+      - run: npm run smoke
